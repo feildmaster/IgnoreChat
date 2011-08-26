@@ -1,0 +1,14 @@
+name: IgnoreChat
+main: feildmaster.IgnoreChat.Ignore
+version: 1.0
+author: feildmaster
+commands:
+  ignore:
+    description: Ignore a player
+  ignore-list:
+    description: List ignored players
+permissions:
+  ignore.use:
+    default: true
+  ignore.block:
+    defualt: op
