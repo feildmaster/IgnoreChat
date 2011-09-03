@@ -1,5 +1,6 @@
 package feildmaster.IgnoreChat;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +18,15 @@ class IgnoreListener extends PlayerListener {
         if(event.isCancelled()) return;
 
         Map<String, List<String>> ignoreList = plugin.getList();
-        Set<Player> recipients = event.getRecipients();
         String p = event.getPlayer().getName();
+        Set<Player> removed = new HashSet<Player>();
 
-        for(Player r : recipients)
+        for(Player r : event.getRecipients())
             if((ignoreList.containsKey(p) && ignoreList.get(p).contains(r.getName()))
                     ||(ignoreList.containsKey(r.getName()) && ignoreList.get(r.getName()).contains(p)))
-                recipients.remove(r);
+                removed.add(r);
+
+        if(!removed.isEmpty())
+            event.getRecipients().removeAll(removed);
   }
 }
