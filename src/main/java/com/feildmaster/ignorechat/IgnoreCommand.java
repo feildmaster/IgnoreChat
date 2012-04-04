@@ -1,23 +1,19 @@
-package feildmaster.IgnoreChat;
+package com.feildmaster.ignorechat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import java.util.*;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 class IgnoreCommand implements CommandExecutor {
     private final Ignore plugin;
-    public IgnoreCommand(Ignore p) {
+    public IgnoreCommand(final Ignore p) {
         plugin = p;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!(sender instanceof Player) || args.length != 1) return false;
 
-        Player player = (Player)sender;
+        Player player = (Player) sender;
         Player query = plugin.getServer().getPlayer(args[0]);
         if(query == null) {
             sender.sendMessage("[IgnoreChat] Player not found");
