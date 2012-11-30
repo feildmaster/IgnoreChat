@@ -21,6 +21,9 @@ public class Ignore extends JavaPlugin {
         // ignore-list command
         new ListCommand(this);
 
+        // me command
+        new MeCommand(this);
+
         pluginName = getDescription().getName();
     }
 

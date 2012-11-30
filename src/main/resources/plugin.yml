@@ -7,6 +7,8 @@ commands:
     description: Ignore a player
   ignore-list:
     description: List ignored players
+  me:
+    description: Performs actions as player on the server
 permissions:
   ignore.use:
     default: true
