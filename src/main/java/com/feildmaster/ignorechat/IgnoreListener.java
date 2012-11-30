@@ -1,33 +1,30 @@
 package com.feildmaster.ignorechat;
 
-import java.util.*;
+import java.util.Iterator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 class IgnoreListener implements Listener {
     private final Ignore plugin;
 
-    public IgnoreListener(Ignore p) {
+    IgnoreListener(Ignore p) {
         plugin = p;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
-    public void onPlayerChat(PlayerChatEvent event) {
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
 
-        Map<String, List<String>> ignoreList = plugin.getList();
-        String p = event.getPlayer().getName();
-        List<String> playerIgnores = ignoreList.get(p);
+        Iterator<Player> iterator = event.getRecipients().iterator();
+        while(iterator.hasNext()) {
+            Player recipient = iterator.next();
 
-        for (Iterator<Player> it = event.getRecipients().iterator(); it.hasNext();) {
-            Player r = it.next();
-            List<String> recipientIgnores = ignoreList.get(r.getName());
-
-            boolean playerIgnoresRecipient = playerIgnores != null && playerIgnores.contains(r.getName());
-            boolean recipientIgnoresPlayer = recipientIgnores != null && recipientIgnores.contains(p);
-            if (playerIgnoresRecipient || recipientIgnoresPlayer) {
-                it.remove();
+            if (//!recipient.canSee(event.getPlayer()) || // Recipient can't see player? - (behavioral change)
+                    // Sender is ignoring recipient? - This doesn't really make sense in this simple plugin
+                    plugin.isIgnoring(recipient, event.getPlayer())) { // Recipient is ignoring sender?
+                iterator.remove();
             }
         }
     }

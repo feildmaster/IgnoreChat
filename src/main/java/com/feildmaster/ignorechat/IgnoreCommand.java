@@ -1,41 +1,52 @@
 package com.feildmaster.ignorechat;
 
 import java.util.*;
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-class IgnoreCommand implements CommandExecutor {
-    private final Ignore plugin;
+class IgnoreCommand extends AbstractCommand {
     public IgnoreCommand(final Ignore p) {
-        plugin = p;
+        super(p, "ignore", "ignore.use");
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player) || args.length != 1) return false;
+        if(!(sender instanceof Player)) {
+            sender.sendMessage("You must be a player to do this");
+            return false;
+        }
+
+        if (args.length != 1) {
+            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " [Player]");
+            return false;
+        }
+
+        if (!plugin.getServer().isPrimaryThread()) {
+            throw new IllegalStateException("Commands can only be performed on the main thread!");
+        }
 
         Player player = (Player) sender;
         Player query = plugin.getServer().getPlayer(args[0]);
         if(query == null) {
-            sender.sendMessage("[IgnoreChat] Player not found");
+            plugin.sendMessage(sender, args[0] + " not found");
             return false;
-        } else if (player == query || !player.hasPermission("ignore.use") || query.hasPermission("ignore.block")) {
-            sender.sendMessage("[IgnoreChat] Forbidden");
+        } else if (player == query) {
+            plugin.sendMessage(sender, "You can not ignore yourself");
+            return false;
+        } else if (query.hasPermission("ignore.block")) {
+            plugin.sendMessage(sender, "This player can not be ignored");
             return false;
         }
 
-        String pn = player.getName();
-        String qn = query.getName();
-        Map<String, List<String>> ignoreList = plugin.getList();
+        String queryName = query.getName();
 
-        if(!ignoreList.containsKey(pn)) ignoreList.put(pn, new ArrayList<String>());
-
-        List<String> list = ignoreList.get(pn);
-        if(list.contains(qn)) {
-            list.remove(qn);
-            sender.sendMessage("[IgnoreChat] No longer ignoring "+qn);
+        List<String> list = plugin.getList(player);
+        if(list.contains(queryName)) {
+            list.remove(queryName);
+            plugin.sendMessage(sender, String.format("No longer ignoring %s", queryName));
         } else {
-            list.add(qn);
-            sender.sendMessage("[IgnoreChat] Ignoring "+qn);
+            list.add(queryName);
+            plugin.sendMessage(sender, String.format("Ignoring %s", queryName));
         }
         return true;
     }
