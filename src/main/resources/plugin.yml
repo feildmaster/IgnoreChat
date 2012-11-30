@@ -9,6 +9,8 @@ commands:
     description: List ignored players
   me:
     description: Performs actions as player on the server
+  tell:
+    description: Message another player in private
 permissions:
   ignore.use:
     default: true

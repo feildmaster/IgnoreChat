@@ -24,6 +24,9 @@ public class Ignore extends JavaPlugin {
         // me command
         new MeCommand(this);
 
+        // tell command
+        new TellCommand(this);
+
         pluginName = getDescription().getName();
     }
 
