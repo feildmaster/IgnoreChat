@@ -13,12 +13,12 @@ class IgnoreCommand extends AbstractCommand {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!(sender instanceof Player)) {
             sender.sendMessage("You must be a player to do this");
-            return false;
+            return true;
         }
 
         if (args.length != 1) {
             sender.sendMessage(ChatColor.RED + "Usage: /" + label + " [Player]");
-            return false;
+            return true;
         }
 
         if (!plugin.getServer().isPrimaryThread()) {
@@ -29,13 +29,13 @@ class IgnoreCommand extends AbstractCommand {
         Player query = plugin.getServer().getPlayer(args[0]);
         if(query == null) {
             plugin.sendMessage(sender, args[0] + " not found");
-            return false;
+            return true;
         } else if (player == query) {
             plugin.sendMessage(sender, "You can not ignore yourself");
-            return false;
+            return true;
         } else if (query.hasPermission("ignore.block")) {
             plugin.sendMessage(sender, "This player can not be ignored");
-            return false;
+            return true;
         }
 
         String queryName = query.getName();
