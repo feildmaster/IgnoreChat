@@ -1,6 +1,7 @@
 package com.feildmaster.ignorechat;
 
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.*;
 
 class ListCommand extends AbstractCommand {
@@ -16,21 +17,15 @@ class ListCommand extends AbstractCommand {
         StringBuilder string = new StringBuilder();
         List<String> list = plugin.getList(sender);
 
-        string.append("You are ignoring: ");
+        string.append("You are ignoring:").append(" ");
 
         if (list.isEmpty()) {
             string.append("No one");
         } else {
-            for (int x = 0; x < list.size(); x++) {
-                if (x > 0) {
-                    string.append(", ");
-                }
-
-                string.append(list.get(x));
-            }
+            string.append(StringUtils.join(list, ", "));
         }
 
-        sender.sendMessage(string.toString());
+        plugin.sendMessage(sender, string.toString());
 
         return true;
     }
