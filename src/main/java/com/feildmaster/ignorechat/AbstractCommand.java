@@ -5,11 +5,14 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 abstract class AbstractCommand implements CommandExecutor {
+    static final String IGNORE_BLOCK_PERMISSION = "ignore.block";
+
     final Ignore plugin;
+    final PluginCommand command;
 
     AbstractCommand(Ignore p, String commandName, String permission) {
         plugin = p;
-        PluginCommand command = plugin.getCommand(commandName);
+        command = plugin.getCommand(commandName);
         if (command != null) { // Don't do anything if the command has been disabled somehow
             command.setExecutor(this);
             command.setPermission(permission);
@@ -19,6 +22,16 @@ abstract class AbstractCommand implements CommandExecutor {
     }
 
     public abstract boolean onCommand(CommandSender sender, Command command, String label, String[] args);
+
+    boolean findString(String string, String... contents) {
+        for (String word : contents) {
+            if (string.equalsIgnoreCase(word)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     void broadcastMessage(CommandSender sender, String message) {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
@@ -31,5 +44,13 @@ abstract class AbstractCommand implements CommandExecutor {
         }
 
         plugin.getServer().getConsoleSender().sendMessage(message); // Send to the console
+    }
+
+    void sendUsage(CommandSender sender) {
+        sendUsage(sender, "");
+    }
+
+    void sendUsage(CommandSender sender, String extra) {
+        sender.sendMessage(command.getUsage() + extra);
     }
 }

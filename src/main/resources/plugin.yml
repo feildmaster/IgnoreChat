@@ -5,14 +5,25 @@ author: feildmaster
 commands:
   ignore:
     description: Ignore a player
+    usage: /<command> <player>
   ignore-list:
     description: List ignored players
+    usage: /<command>
   me:
     description: Performs actions as player on the server
+    usage: /<command> <args...>
   tell:
     description: Message another player in private
+    usage: /<command> <player> <message>
+  mute:
+    description: Mute a player server wide
+    usage: /<command> <player>
 permissions:
   ignore.use:
     default: true
   ignore.block:
     defualt: op
+  ignore.mute:
+    default: op
+  ignore.mute.silence:
+    default: op
