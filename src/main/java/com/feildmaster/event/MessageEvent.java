@@ -19,6 +19,7 @@ import org.bukkit.event.Event;
  */
 public abstract class MessageEvent extends Event {
     private final Set<CommandSender> recipients = new HashSet<CommandSender>();
+    private final String original;
     private String message;
 
     /**
@@ -27,7 +28,7 @@ public abstract class MessageEvent extends Event {
      * @param message the original message
      */
     public MessageEvent(String message) {
-        this.message = message;
+        this.original = this.message = message;
     }
 
     /**
@@ -51,6 +52,15 @@ public abstract class MessageEvent extends Event {
     public MessageEvent(String message, Collection<CommandSender> recipients) {
         this(message);
         getRecipients().addAll(recipients);
+    }
+
+    /**
+     * Gets the original message to be sent.
+     *
+     * @return the original message
+     */
+    public final String getOriginalMessage() {
+        return original;
     }
 
     /**
