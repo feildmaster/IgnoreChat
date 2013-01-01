@@ -1,6 +1,9 @@
 package com.feildmaster.ignorechat;
 
+import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -33,17 +36,34 @@ abstract class AbstractCommand implements CommandExecutor {
         return false;
     }
 
-    void broadcastMessage(CommandSender sender, String message) {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+    void broadcast(final String message, final Set<CommandSender> recipients) {
+        if (StringUtils.isBlank(message)) {
+            return;
+        }
+
+        for (final CommandSender recipient : recipients) {
+            if (recipient != null) {
+                recipient.sendMessage(message);
+            }
+        }
+    }
+
+    Set<CommandSender> getRecipients(CommandSender sender) {
+        Player[] onlineList = plugin.getServer().getOnlinePlayers();
+        ImmutableSet.Builder<CommandSender> builder = ImmutableSet.<CommandSender>builder();
+        builder.add(sender); // Add the sender just in case
+
+        for (Player player : onlineList) {
             if (//!player.canSee(playerSender) || // The player can't see the sender?
                     //plugin.isIgnoring(sender, player) || // The sender isIgnoring the player?
                     plugin.isIgnoring(player, sender)) { // Player is ignoring sender?
                 continue;
             }
-            player.sendMessage(message);
+
+            builder.add(player);
         }
 
-        plugin.getServer().getConsoleSender().sendMessage(message); // Send to the console
+        return builder.build();
     }
 
     void sendUsage(CommandSender sender) {

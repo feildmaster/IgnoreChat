@@ -1,5 +1,7 @@
 package com.feildmaster.ignorechat;
 
+import com.feildmaster.event.EmoteEvent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,18 +12,24 @@ class MeCommand extends AbstractCommand {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player) || args.length == 0) {
+        if (args.length == 0) {
             return false; // Pass to vanilla
         }
 
-        StringBuilder message = new StringBuilder();
-        message.append("* ").append(((Player) sender).getDisplayName());
-        for (String arg : args) {
-            message.append(" ");
-            message.append(arg);
-        }
+        final String displayName = sender instanceof Player ? ((Player) sender).getDisplayName() : sender.getName();
 
-        broadcastMessage(sender, message.toString());
+        StringBuilder builder = new StringBuilder();
+        builder.append("* ").append(displayName).append(" ");
+        builder.append(StringUtils.join(args, " "));
+
+        if (EmoteEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            EmoteEvent event = new EmoteEvent(sender, builder.toString(), getRecipients(sender));
+            plugin.getServer().getPluginManager().callEvent(event);
+            final String message = event.getMessage();
+            broadcast(message, event.getRecipients());
+        } else {
+            broadcast(builder.toString(), getRecipients(sender));
+        }
 
         return true;
     }
