@@ -1,6 +1,7 @@
 package com.feildmaster.event;
 
 import java.util.Collection;
+import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
@@ -39,7 +40,7 @@ public final class EmoteEvent extends MessageEvent {
      * @param recipients the recipients of the message
      * @throws IllegalArgumentException if sender is null
      */
-    public EmoteEvent(final CommandSender sender, final String message, CommandSender... recipients) {
+    public EmoteEvent(final CommandSender sender, final String message, final CommandSender... recipients) {
         super(message, recipients);
         Validate.notNull(sender, "Sender may not be null");
         this.sender = sender;
@@ -53,7 +54,24 @@ public final class EmoteEvent extends MessageEvent {
      * @param recipients the recipients of the message
      * @throws IllegalArgumentException if sender is null
      */
-    public EmoteEvent(final CommandSender sender, final String message, Collection<CommandSender> recipients) {
+    public EmoteEvent(final CommandSender sender, final String message, final Collection<CommandSender> recipients) {
+        super(message, recipients);
+        Validate.notNull(sender, "Sender may not be null");
+        this.sender = sender;
+    }
+
+    /**
+     * Crates a new event with the provided sender, message, and recipients.
+     * <p />
+     * The provided {@link Set} will be used as the returned recipients.
+     *
+     * @param sender the sender of the Emote
+     * @param message the original (full) message
+     * @param recipients the recipients of the message
+     * @throws IllegalArgumentException if sender is null
+     * @throws IlledalArgumentException if recipients is null
+     */
+    public EmoteEvent(final CommandSender sender, final String message, final Set<CommandSender> recipients) {
         super(message, recipients);
         Validate.notNull(sender, "Sender may not be null");
         this.sender = sender;

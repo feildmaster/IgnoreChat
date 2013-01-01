@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 
@@ -18,7 +19,7 @@ import org.bukkit.event.Event;
  * @author feildmaster
  */
 public abstract class MessageEvent extends Event {
-    private final Set<CommandSender> recipients = new HashSet<CommandSender>();
+    private final Set<CommandSender> recipients;
     private final String original;
     private String message;
 
@@ -27,8 +28,9 @@ public abstract class MessageEvent extends Event {
      *
      * @param message the original message
      */
-    public MessageEvent(String message) {
+    public MessageEvent(final String message) {
         this.original = this.message = message;
+        this.recipients = new HashSet<CommandSender>();
     }
 
     /**
@@ -37,7 +39,7 @@ public abstract class MessageEvent extends Event {
      * @param message the original message
      * @param recipients the recipients of the message
      */
-    public MessageEvent(String message, CommandSender... recipients) {
+    public MessageEvent(final String message, final CommandSender... recipients) {
         this(message);
         Collections.addAll(getRecipients(), recipients);
     }
@@ -49,9 +51,25 @@ public abstract class MessageEvent extends Event {
      * @param recipients the recipients of the message
      * @throws NullPointerException if recipients is null
      */
-    public MessageEvent(String message, Collection<CommandSender> recipients) {
+    public MessageEvent(final String message, final Collection<CommandSender> recipients) {
         this(message);
         getRecipients().addAll(recipients);
+    }
+
+    /**
+     * Creates a new MessageEvent with the provided message and recipients.
+     * <p />
+     * The {@link Set} provided will be used as the internal set. This allows
+     * you to use an immutable set, if you so wish.
+     *
+     * @param message the original message
+     * @param recipients the recipients of the message
+     * @throws IllegalArgumentException if recipients is null
+     */
+    public MessageEvent(final String message, final Set<CommandSender> recipients) {
+        Validate.notNull(recipients, "Recipients may not be null");
+        this.original = this.message = message;
+        this.recipients = recipients;
     }
 
     /**

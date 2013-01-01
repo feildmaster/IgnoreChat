@@ -1,7 +1,7 @@
 package com.feildmaster.ignorechat;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Set;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.*;
@@ -36,7 +36,7 @@ abstract class AbstractCommand implements CommandExecutor {
         return false;
     }
 
-    void broadcast(final String message, final Set<CommandSender> recipients) {
+    void broadcast(final String message, final Collection<CommandSender> recipients) {
         if (StringUtils.isBlank(message)) {
             return;
         }
@@ -48,7 +48,7 @@ abstract class AbstractCommand implements CommandExecutor {
         }
     }
 
-    Set<CommandSender> getRecipients(CommandSender sender) {
+    Collection<CommandSender> getRecipients(CommandSender sender) {
         Player[] onlineList = plugin.getServer().getOnlinePlayers();
         ImmutableSet.Builder<CommandSender> builder = ImmutableSet.<CommandSender>builder();
         builder.add(sender); // Add the sender just in case
